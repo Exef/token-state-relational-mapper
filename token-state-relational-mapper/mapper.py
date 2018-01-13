@@ -3,11 +3,22 @@ Simple ERC20 token state relational mapper service that gathers data from Ethere
 Recent token state is stored in the database.
 """
 
-from flask import Flask
+from flask import Flask, jsonify
+from .mapper_options import MapperOptions
 import click
 
 app = Flask('token-state-relational-mapper')
 app.config.from_envvar('TSRM_SETTINGS')
+
+
+@app.route('/api/configuration', methods=['GET'])
+def get_configuration():
+    return jsonify({
+        'options': app.config['MapperOptions'].serialize(),
+        'parity_node_uri': app.config['PARITY_NODE_URI'],
+        'sql_connection': app.config['DATABASE_URI']
+    })
+
 
 @app.cli.command()
 @click.option('--address', help='The address of ERC20 contract to watch.')
@@ -22,4 +33,6 @@ def start_mapping(start, end, address, min_block_height):
         click.echo('Ending block: %i' % end)
 
     click.echo('Connecting to parity node: %s' % app.config['PARITY_NODE_URI'])
+    app.config['MapperOptions'] = MapperOptions(address, start, end, min_block_height)
+
     app.run()

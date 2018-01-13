@@ -6,7 +6,8 @@ setup(
     include_package_data=True,
     install_requires=[
         'flask',
-        'web3'
+        'web3',
+        'click'
     ],
     setup_requires=[
         'pytest-runner',
