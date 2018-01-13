@@ -2,22 +2,9 @@
 Simple ERC20 token state relational mapper service that gathers data from Ethereum blockchain about specific token.
 Recent token state is stored in the database.
 """
-
-from flask import Flask, jsonify
-from .mapper_options import MapperOptions
 import click
-
-app = Flask('token-state-relational-mapper')
-app.config.from_envvar('TSRM_SETTINGS')
-
-
-@app.route('/api/configuration', methods=['GET'])
-def get_configuration():
-    return jsonify({
-        'options': app.config['MapperOptions'].serialize(),
-        'parity_node_uri': app.config['PARITY_NODE_URI'],
-        'sql_connection': app.config['DATABASE_URI']
-    })
+from . import app
+from .mapper_options import MapperOptions
 
 
 @app.cli.command()

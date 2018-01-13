@@ -7,7 +7,8 @@ setup(
     install_requires=[
         'flask',
         'web3',
-        'click'
+        'click',
+        'Flask-SQLAlchemy'
     ],
     setup_requires=[
         'pytest-runner',
