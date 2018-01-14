@@ -1,2 +1,0 @@
-DATABASE_URI = 'sqlite://'
-PARITY_NODE_URI = '127.0.0.1:8545'

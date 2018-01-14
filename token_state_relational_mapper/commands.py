@@ -3,8 +3,8 @@ Simple ERC20 token state relational mapper service that gathers data from Ethere
 Recent token state is stored in the database.
 """
 import click
-from . import app
-from .mapper_options import MapperOptions
+from . import app, db
+from .mapper.mapper_options import MapperOptions
 
 
 @app.cli.command()
@@ -23,3 +23,17 @@ def start_mapping(start, end, address, min_block_height):
     app.config['MapperOptions'] = MapperOptions(address, start, end, min_block_height)
 
     app.run()
+
+
+@app.cli.command()
+def init_db():
+    """ Initialize the database using connection string from config. """
+    db.create_all()
+    click.echo('Initialized database under %s' % app.config['SQLALCHEMY_DATABASE_URI'])
+
+
+@app.cli.command()
+def drop_db():
+    """ Drop the database using connection string from config. """
+    db.drop_all()
+    click.echo('Dropped database under %s' % app.config['SQLALCHEMY_DATABASE_URI'])

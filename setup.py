@@ -1,8 +1,8 @@
 from setuptools import setup
 
 setup(
-    name='token-state-relational-mapper',
-    packages=['token-state-relational-mapper'],
+    name='token_state_relational_mapper',
+    packages=['token_state_relational_mapper'],
     include_package_data=True,
     install_requires=[
         'flask',

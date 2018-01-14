@@ -15,3 +15,4 @@ class MapperOptions:
             'ending_block': self.ending_block,
             'minimum_block_height': self.minimum_block_height
         }
+
