@@ -1,3 +1,6 @@
+"""
+Database models
+"""
 from . import db
 
 
