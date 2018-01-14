@@ -7,6 +7,9 @@ from token_state_relational_mapper import db
 class Token(db.Model):
     __tablename__ = 'tokens'
     id = db.Column(db.BigInteger, primary_key=True)
+    address = db.Column(db.Text, unique=True)
+    name = db.Column(db.Text)
+    symbol = db.Column(db.Text)
     last_changed_in_block = db.Column(db.BigInteger)
     total_tokens_supply = db.Column(db.Numeric)
     total_tokens_created = db.Column(db.Numeric)

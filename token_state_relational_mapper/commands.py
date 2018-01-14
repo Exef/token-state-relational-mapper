@@ -3,7 +3,7 @@ Commands to run ERC20 Token State Relational Mapper.
 """
 import click
 from . import app, db
-from .mapper.mapper_options import MapperOptions
+from .mapper import Mapper, MapperOptions
 
 
 @app.cli.command()
@@ -20,6 +20,9 @@ def start_mapping(start, end, address, min_block_height):
 
     click.echo('Connecting to parity node: %s' % app.config['PARITY_NODE_URI'])
     app.config['MapperOptions'] = MapperOptions(address, start, end, min_block_height)
+
+    mapper = Mapper(app.config['PARITY_NODE_URI'], app.config['MapperOptions'])
+    mapper.add_token_to_storage_if_not_exists()
 
     app.run()
 
