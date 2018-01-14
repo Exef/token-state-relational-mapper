@@ -1,6 +1,5 @@
 """
-Simple ERC20 token state relational mapper service that gathers data from Ethereum blockchain about specific token.
-Recent token state is stored in the database.
+Commands to run ERC20 Token State Relational Mapper. 
 """
 import click
 from . import app, db
