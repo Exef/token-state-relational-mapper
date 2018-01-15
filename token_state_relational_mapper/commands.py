@@ -1,7 +1,8 @@
 """
 Commands to run ERC20 Token State Relational Mapper. 
 """
-import click
+import click, json
+from os import path
 from . import app, db
 from .mapper import Mapper, MapperOptions
 
@@ -21,10 +22,16 @@ def start_mapping(start, end, address, min_block_height):
     click.echo('Connecting to parity node: %s' % app.config['PARITY_NODE_URI'])
     app.config['MapperOptions'] = MapperOptions(address, start, end, min_block_height)
 
-    mapper = Mapper(app.config['PARITY_NODE_URI'], app.config['MapperOptions'])
-    mapper.add_token_to_storage_if_not_exists()
+    map_token_state()
 
     app.run()
+
+
+def map_token_state():
+    with open(str(path.join(path.abspath(path.dirname(__file__)), 'erc20_abi.json')), 'r') as abi_definition:
+        mapper = Mapper(app.config['PARITY_NODE_URI'], app.config['MapperOptions'], json.load(abi_definition))
+        mapper.add_token_to_storage_if_not_exists()
+        mapper.gather_state_of_token()
 
 
 @app.cli.command()
