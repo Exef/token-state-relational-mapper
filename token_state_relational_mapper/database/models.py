@@ -34,3 +34,5 @@ class BalanceChange(db.Model):
     amount = db.Column(db.Numeric)
     to_address = db.Column(db.Text)
     from_address = db.Column(db.Text)
+    token_id = db.Column(db.BigInteger, db.ForeignKey('tokens.id'))
+    token = db.relationship('Token', backref=db.backref('balance_changes', lazy=True))
