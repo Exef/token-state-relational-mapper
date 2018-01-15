@@ -12,4 +12,4 @@ app.config.from_envvar('TSRM_SETTINGS')
 db = SQLAlchemy(app)
 
 from . import routes
-from token_state_relational_mapper.database import models
+from token_state_relational_mapper.mapper.database import models

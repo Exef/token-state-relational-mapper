@@ -1,3 +1,34 @@
 """
 
 """
+
+from .database.models import BalanceChange
+
+
+class EventAnalyzer:
+    def __init__(self, event_name):
+        self.event_name = event_name
+
+    def get_events(self, events_list):
+        return list(
+            filter((lambda event: event is not None),
+                   map(self._analyze, events_list)))
+
+    def _analyze(self):
+        return None
+
+
+class TransferEventAnalyzer(EventAnalyzer):
+    def __init__(self):
+        EventAnalyzer.__init__(self, 'Transfer')
+
+    def _analyze(self, event_dict):
+        if event_dict['event'] is self.event_name:
+            return BalanceChange(
+                block_time=event_dict['blockNumber'],
+                amount=event_dict['args']['_value'],
+                to_address=event_dict['args']['_to'],
+                from_address=event_dict['args']['_from'],
+            )
+        else:
+            return None
