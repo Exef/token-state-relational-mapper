@@ -1,5 +1,6 @@
 class TokenContractConnector:
     def __init__(self, web3_instance, contract_abi, contract_address):
+        self.event_name = 'Transfer'
         self.abi = contract_abi
         self.contract_address = contract_address
         self.web3 = web3_instance
@@ -21,6 +22,5 @@ class TokenContractConnector:
             end_at_block = 'latest'
 
         filters = {'fromBlock': start_from_block, 'toBlock': end_at_block}
-
-        transfers_filter = self.contract.on('Transfer', filters)
+        transfers_filter = self.contract.on(self.event_name, filters)
         return transfers_filter.get(only_changes=False)

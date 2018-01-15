@@ -14,6 +14,7 @@ class Token(db.Model):
     total_tokens_supply = db.Column(db.Numeric)
     total_tokens_created = db.Column(db.Numeric)
     total_tokens_destroyed = db.Column(db.Numeric)
+    balance_changes = db.relationship("BalanceChange")
 
 
 class TokenHolder(db.Model):
@@ -35,4 +36,4 @@ class BalanceChange(db.Model):
     to_address = db.Column(db.Text)
     from_address = db.Column(db.Text)
     token_id = db.Column(db.BigInteger, db.ForeignKey('tokens.id'))
-    token = db.relationship('Token', backref=db.backref('balance_changes', lazy=True))
+    token = db.relationship('Token', back_populates='balance_changes')
