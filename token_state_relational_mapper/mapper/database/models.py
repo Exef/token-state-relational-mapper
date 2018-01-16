@@ -25,8 +25,8 @@ class TokenHolder(db.Model):
     address = db.Column(db.Text, nullable=False)
 
     last_changed_in_block = db.Column(db.BigInteger)
-    balance = db.Column(db.Numeric)
-    token_turnover = db.Column(db.Numeric)
+    balance = db.Column(db.Numeric, default=0)
+    token_turnover = db.Column(db.Numeric, default=0)
 
     held_token_id = db.Column(db.BigInteger, db.ForeignKey('tokens.id'))
     held_token = db.relationship('Token')

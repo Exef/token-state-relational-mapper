@@ -15,14 +15,6 @@ def get_token(token_address: str, session=None):
     return token
 
 
-def attach_transfer_to_holders(token, transfer, session):
-    from_token_holder = get_token_holder(session, token, transfer.from_address)
-    to_token_holder = get_token_holder(session, token, transfer.to_address)
-
-    transfer.sent_from = from_token_holder
-    transfer.sent_to = to_token_holder
-
-
 def get_token_holder(session, token, holder_address):
     token_holder = session.query(TokenHolder) \
         .filter(TokenHolder.address == holder_address) \
@@ -35,6 +27,21 @@ def get_token_holder(session, token, holder_address):
         session.commit()
 
     return token_holder
+
+
+def attach_transfer_to_holders(token, transfer, session):
+    from_token_holder = get_token_holder(session, token, transfer.from_address)
+    to_token_holder = get_token_holder(session, token, transfer.to_address)
+
+    transfer.sent_from = from_token_holder
+    transfer.sent_to = to_token_holder
+
+    from_token_holder.balance = from_token_holder.balance - transfer.amount
+    from_token_holder.last_changed_in_block = transfer.block_time
+
+    to_token_holder.balance = to_token_holder.balance + transfer.amount
+    to_token_holder.token_turnover = to_token_holder.token_turnover + transfer.amount
+    to_token_holder.last_changed_in_block = transfer.block_time
 
 
 def add_transfers_to_token(token_address: str, transfers: [Transfer]):
