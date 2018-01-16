@@ -37,11 +37,22 @@ def attach_transfer_to_holders(token, transfer, session):
     transfer.sent_to = to_token_holder
 
     from_token_holder.balance = from_token_holder.balance - transfer.amount
-    from_token_holder.last_changed_in_block = transfer.block_time
 
     to_token_holder.balance = to_token_holder.balance + transfer.amount
     to_token_holder.token_turnover = to_token_holder.token_turnover + transfer.amount
-    to_token_holder.last_changed_in_block = transfer.block_time
+
+    if transfer.is_minting_event():
+        token.total_tokens_created = token.total_tokens_created + transfer.amount
+    elif transfer.is_burning_transfer():
+        token.total_tokens_destroyed = token.total_tokens_destroyed + transfer.amount
+
+    update_last_changed_in_block_property(transfer.block_time, from_token_holder, to_token_holder, token)
+
+
+def update_last_changed_in_block_property(block_time, *entities):
+    for updated_entity in entities:
+        if updated_entity.last_changed_in_block is None or updated_entity.last_changed_in_block < block_time:
+            updated_entity.last_changed_in_block = block_time
 
 
 def add_transfers_to_token(token_address: str, transfers: [Transfer]):

@@ -3,18 +3,20 @@ Database models
 """
 from token_state_relational_mapper import db
 
+zero_address = '0x0000000000000000000000000000000000000000'
+
 
 class Token(db.Model):
     __tablename__ = 'tokens'
     id = db.Column(db.BigInteger, primary_key=True)
-
     address = db.Column(db.Text, unique=True)
     name = db.Column(db.Text)
     symbol = db.Column(db.Text)
     last_changed_in_block = db.Column(db.BigInteger)
-    total_tokens_supply = db.Column(db.Numeric)
-    total_tokens_created = db.Column(db.Numeric)
-    total_tokens_destroyed = db.Column(db.Numeric)
+    total_tokens_supply = db.Column(db.Numeric, default=0)
+    total_tokens_created = db.Column(db.Numeric, default=0)
+    total_tokens_destroyed = db.Column(db.Numeric, default=0)
+
     transfers = db.relationship("Transfer")
     token_holders = db.relationship("TokenHolder", back_populates='held_token')
 
@@ -50,3 +52,9 @@ class Transfer(db.Model):
 
     sent_to_id = db.Column("sent_to_id", db.BigInteger, db.ForeignKey("token_holders.id"))
     sent_to = db.relationship("TokenHolder", backref="received_transfers", foreign_keys='Transfer.sent_to_id')
+
+    def is_minting_event(self):
+        return self.from_address == zero_address
+
+    def is_burning_transfer(self):
+        return self.to_address == zero_address
