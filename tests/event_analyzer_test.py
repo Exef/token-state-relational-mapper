@@ -1,7 +1,7 @@
 import pytest
 from .test_data.test_transfer_events import *
 from token_state_relational_mapper.mapper import TransferEventAnalyzer
-from token_state_relational_mapper.mapper.database import BalanceChange
+from token_state_relational_mapper.mapper.database import Transfer
 
 
 zero_address = '0x0000000000000000000000000000000000000000'
@@ -16,7 +16,7 @@ def test_analyzing_single_transfer_event():
     balance_changes = analyzer.get_events(list_with_single_transfer_event)
     assert balance_changes.__len__() == 1
 
-    change: BalanceChange = balance_changes[0]
+    change: Transfer = balance_changes[0]
     assert change.amount == 1223211588213989209982694
     assert change.from_address == '0x0000000000000000000000000000000000000000'
     assert change.to_address == '0xF432cEc23b2A0d6062B969467f65669De81F4653'

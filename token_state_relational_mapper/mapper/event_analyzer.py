@@ -2,7 +2,7 @@
 
 """
 
-from .database.models import BalanceChange
+from .database.models import Transfer
 
 
 class EventAnalyzer:
@@ -23,7 +23,7 @@ class TransferEventAnalyzer(EventAnalyzer):
 
     def _analyze(self, event_dict):
         if event_dict['event'] == self.event_name:
-            return BalanceChange(
+            return Transfer(
                 block_time=event_dict['blockNumber'],
                 amount=event_dict['args']['_value'],
                 to_address=event_dict['args']['_to'],

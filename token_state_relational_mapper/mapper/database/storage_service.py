@@ -1,4 +1,4 @@
-from .models import Token, BalanceChange
+from .models import Token, Transfer
 from .session_provider import get_session
 
 
@@ -15,8 +15,8 @@ def get_token(token_address: str, session=None):
     return token
 
 
-def add_balance_changes_to_token(token_address: str, balance_changes: [BalanceChange]):
+def add_balance_changes_to_token(token_address: str, balance_changes: [Transfer]):
     session = get_session()
     token = get_token(token_address, session)
-    token.balance_changes.extend(balance_changes)
+    token.transfers.extend(balance_changes)
     session.commit()
