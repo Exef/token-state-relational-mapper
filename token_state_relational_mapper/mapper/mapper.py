@@ -24,6 +24,6 @@ class Mapper:
     def gather_state_of_token(self, starting_block, ending_block):
         transfer_events = self.token_contract.get_state(starting_block, ending_block)
         balance_changes = self.event_analyzer.get_events(transfer_events)
-        self.storage_service.add_balance_changes_to_token(self.contract_address, balance_changes)
+        self.storage_service.add_transfers_to_token(self.contract_address, balance_changes)
 
 
