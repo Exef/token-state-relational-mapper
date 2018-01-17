@@ -12,9 +12,7 @@ class TokenContractConnector:
         token_symbol = self.contract.call().symbol()
         token_decimal_places = self.contract.call().decimals()
 
-        real_total_supply = total_supply / (10 ** token_decimal_places)
-
-        return real_total_supply, token_name, token_symbol
+        return token_name, token_symbol, total_supply, token_decimal_places
 
     def get_state(self, start_from_block, end_at_block):
         filters = {'fromBlock': start_from_block, 'toBlock': end_at_block}

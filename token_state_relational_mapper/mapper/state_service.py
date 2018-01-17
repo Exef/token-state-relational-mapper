@@ -51,11 +51,12 @@ class TokenStateService:
             .first()
 
     def create_token(self):
-        total_supply, token_name, token_symbol = self.token_contract.get_basic_information()
+        token_name, token_symbol, token_total_supply, token_decimals = self.token_contract.get_basic_information()
         token = self.add_token(Token(address=self.token_contract.contract_address,
                                      name=token_name,
                                      symbol=token_symbol,
-                                     total_tokens_supply=total_supply))
+                                     total_tokens_supply=token_total_supply,
+                                     decimals=token_decimals))
 
         return token
 
