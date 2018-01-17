@@ -57,5 +57,10 @@ def drop_db():
 def map_token_state():
     options: MapperOptions = app.config['MapperOptions']
     with open(str(path.join(path.abspath(path.dirname(__file__)), 'erc20_abi.json')), 'r') as abi_definition:
-        mapper = Mapper(app.config['PARITY_NODE_URI'], options.contract_address, json.load(abi_definition), app.logger)
+        mapper = Mapper(
+            ethereum_node_uri=app.config['PARITY_NODE_URI'],
+            contract_address=options.contract_address,
+            abi_definition=json.load(abi_definition),
+            partition_size=app.config['MAX_BLOCKS_TO_MAP_AT_ONCE'],
+            logger=app.logger)
         mapper.start_mapping(starting_block=options.starting_block, ending_block=options.ending_block)

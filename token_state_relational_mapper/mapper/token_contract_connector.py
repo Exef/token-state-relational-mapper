@@ -18,4 +18,6 @@ class TokenContractConnector:
         filters = {'fromBlock': start_from_block, 'toBlock': end_at_block}
         transfers_filter = self.contract.on(self.event_name, filters)
 
-        return transfers_filter.get(only_changes=False)
+        transfers = transfers_filter.get(only_changes=False)
+
+        return transfers
