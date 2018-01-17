@@ -29,10 +29,13 @@ def start_mapping(start, end, address, min_block_height):
     click.echo('Connecting to parity node: %s' % app.config['PARITY_NODE_URI'])
     app.config['MapperOptions'] = MapperOptions(address, start, end, min_block_height)
 
-    process = Process(target=map_token_state)
-    process.start()
+    token_state_mapping_process = Process(target=map_token_state)
+    token_state_mapping_process.start()
 
     app.run()
+
+    if token_state_mapping_process.is_alive():
+        token_state_mapping_process.terminate()
 
 
 @app.cli.command()

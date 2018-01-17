@@ -1,7 +1,8 @@
 from web3 import Web3, HTTPProvider
+
+from token_state_relational_mapper.mapper.database import Token, storage_service
 from .event_analyzer import TransferEventAnalyzer
 from .token_contract_connector import TokenContractConnector
-from token_state_relational_mapper.mapper.database import Token, TokenHolder, storage_service
 
 
 class Mapper:
@@ -25,5 +26,4 @@ class Mapper:
         transfer_events = self.token_contract.get_state(starting_block, ending_block)
         balance_changes = self.event_analyzer.get_events(transfer_events)
         self.storage_service.add_transfers_to_token(self.contract_address, balance_changes)
-
 

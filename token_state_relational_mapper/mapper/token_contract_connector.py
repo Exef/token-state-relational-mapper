@@ -15,7 +15,7 @@ class TokenContractConnector:
 
         return real_total_supply, token_name, token_symbol
 
-    def get_state(self, starting_block, ending_block):
+    def get_state(self, starting_block, ending_block, callback=None):
         start_from_block = starting_block
         end_at_block = ending_block
         if end_at_block is None:
@@ -23,4 +23,8 @@ class TokenContractConnector:
 
         filters = {'fromBlock': start_from_block, 'toBlock': end_at_block}
         transfers_filter = self.contract.on(self.event_name, filters)
+
+        if callback is not None and ending_block == 'latest':
+            transfers_filter.watch(callback)
+
         return transfers_filter.get(only_changes=False)
