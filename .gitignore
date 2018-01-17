@@ -52,6 +52,7 @@ coverage.xml
 
 # Django stuff:
 *.log
+*.log.*
 local_settings.py
 
 # Flask stuff:
@@ -105,3 +106,4 @@ ENV/
 
 # SQLite database
 *.db
+*.1
