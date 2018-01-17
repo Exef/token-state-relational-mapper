@@ -5,21 +5,31 @@ from token_state_relational_mapper import db
 
 zero_address = '0x0000000000000000000000000000000000000000'
 
+block_token_association_table = db.Table('block_token_association',
+                                         db.Column('block_number', db.Integer, db.ForeignKey('blocks.number'), primary_key=True),
+                                         db.Column('token_id', db.Integer, db.ForeignKey('tokens.id'), primary_key=True))
+
+
+class Block(db.Model):
+    __tablename__ = 'blocks'
+    number = db.Column(db.Integer, primary_key=True, autoincrement=False)
+
 
 class Token(db.Model):
     __tablename__ = 'tokens'
     id = db.Column(db.Integer, primary_key=True)
     address = db.Column(db.Text, unique=True)
-    last_changed_in_block = db.Column(db.Integer)
     name = db.Column(db.Text)
     symbol = db.Column(db.Text)
     decimals = db.Column(db.Numeric(scale=0), default=0)
     total_tokens_supply = db.Column(db.Numeric(scale=0), default=0)
     total_tokens_created = db.Column(db.Numeric(scale=0), default=0)
     total_tokens_destroyed = db.Column(db.Numeric(scale=0), default=0)
+    last_changed_in_block = db.Column(db.Integer)
 
-    transfers = db.relationship("Transfer")
+    transfers = db.relationship("Transfer", back_populates='token')
     token_holders = db.relationship("TokenHolder", back_populates='held_token')
+    mapped_blocks = db.relationship('Block', secondary=block_token_association_table)
 
 
 class TokenHolder(db.Model):
