@@ -1,29 +1,30 @@
 from web3 import Web3, HTTPProvider
 
-from token_state_relational_mapper.mapper.database import Token, storage_service
 from .event_analyzer import TransferEventAnalyzer
 from .token_contract_connector import TokenContractConnector
+from .state_service import TokenStateService
 
 
 class Mapper:
-    def __init__(self, ethereum_node_uri, contract_address, abi_definition):
-        self.storage_service = storage_service
-        self.event_analyzer = TransferEventAnalyzer()
+    def __init__(self, ethereum_node_uri, contract_address, abi_definition, logger):
+        self.logger = logger
         self.web3 = Web3(HTTPProvider(ethereum_node_uri))
-        self.contract_address = contract_address
-        self.token_contract = TokenContractConnector(self.web3, abi_definition, self.contract_address)
+        self.event_analyzer = TransferEventAnalyzer()
+        self.contract = TokenContractConnector(self.web3, abi_definition, contract_address)
+        self.service = TokenStateService(self.contract)
 
-    def add_token_to_storage_if_not_exists(self):
-        existing_token = self.storage_service.get_token(self.contract_address)
-        if existing_token is None:
-            total_supply, token_name, token_symbol = self.token_contract.get_basic_information()
-            self.storage_service.add_token(Token(address=self.contract_address,
-                                                 name=token_name,
-                                                 symbol=token_symbol,
-                                                 total_tokens_supply=total_supply))
+    def start_mapping(self, starting_block, ending_block):
+        token = self.service.get_token_or_create_if_not_exists()
+        self.logger.info(
+            'Started gathering state of token %s from block %i to %i' % (token.name, starting_block, ending_block))
 
-    def gather_state_of_token(self, starting_block, ending_block):
-        transfer_events = self.token_contract.get_state(starting_block, ending_block)
+        self.gather_state_of_token(token, starting_block, ending_block)
+
+        self.logger.info(
+            'Ended gathering state of token %s from block %i to %i' % (token.name, starting_block, ending_block)
+        )
+
+    def gather_state_of_token(self, token, starting_block, ending_block):
+        transfer_events = self.contract.get_state(starting_block, ending_block)
         balance_changes = self.event_analyzer.get_events(transfer_events)
-        self.storage_service.add_transfers_to_token(self.contract_address, balance_changes)
-
+        self.service.add_transfers_to_token(token, balance_changes)

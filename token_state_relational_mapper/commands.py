@@ -21,6 +21,7 @@ from .mapper import Mapper, MapperOptions
               help='The minimum block height of block to be mapped')
 def start_mapping(start, end, address, min_block_height):
     """Command to start application. It starts server and starts gathering state of token. """
+
     click.echo('Started mapping contract at address %s.' % address)
     click.echo('Starting block: %i' % start)
     if end is not None:
@@ -56,6 +57,5 @@ def drop_db():
 def map_token_state():
     options: MapperOptions = app.config['MapperOptions']
     with open(str(path.join(path.abspath(path.dirname(__file__)), 'erc20_abi.json')), 'r') as abi_definition:
-        mapper = Mapper(app.config['PARITY_NODE_URI'], options.contract_address, json.load(abi_definition))
-        mapper.add_token_to_storage_if_not_exists()
-        mapper.gather_state_of_token(options.starting_block, options.ending_block)
+        mapper = Mapper(app.config['PARITY_NODE_URI'], options.contract_address, json.load(abi_definition), app.logger)
+        mapper.start_mapping(starting_block=options.starting_block, ending_block=options.ending_block)
