@@ -8,12 +8,13 @@ from .utils import generate_block_ranges
 
 
 class Mapper:
-    def __init__(self, ethereum_node_uri, contract_address, abi_definition, partition_size, logger):
+    def __init__(self, ethereum_node_uri, contract_address, abi_definition, partition_size, max_number_of_retries, logger):
         self.logger = logger
         self.web3 = Web3(HTTPProvider(ethereum_node_uri))
         self.event_analyzer = TransferEventAnalyzer()
         self.contract = TokenContractConnector(self.web3, abi_definition, contract_address)
         self.state_service = TokenStateService(self.contract)
+        self.max_number_of_retries = max_number_of_retries
         self.partition_size = partition_size
 
     def start_mapping(self, starting_block, ending_block):
@@ -42,7 +43,7 @@ class Mapper:
                 self._try_to_retry_mapping(token, start, ending_block, partition_size, retry_count, exception)
 
     def _try_to_retry_mapping(self, token, new_starting_block, ending_block, partition_size, retry_count, exception):
-        if retry_count > 10:
+        if retry_count > self.max_number_of_retries:
             raise exception
 
         self.logger.warning('Encounter requests.exceptions.ReadTimeout. Retry for %i time' % retry_count)
