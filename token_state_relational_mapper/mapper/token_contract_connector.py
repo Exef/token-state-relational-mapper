@@ -18,7 +18,7 @@ class TokenContractConnector:
 
     def get_state(self, start_from_block, end_at_block):
         self.logger.debug(
-            'Getting state of token from contract at address %s from block %i to %i' % (
+            'Getting state of token from contract at address %s from block %s to %s' % (
                 self.contract_address, start_from_block, end_at_block))
 
         filters = {'fromBlock': start_from_block, 'toBlock': end_at_block}
@@ -26,7 +26,7 @@ class TokenContractConnector:
 
         transfers = transfers_filter.get(only_changes=False)
         self.logger.debug(
-            'Found %i transfers of token from contract at address %s from block %i to %i'
+            'Found %i transfers of token from contract at address %s from block %s to %s'
             % (len(transfers), self.contract_address, start_from_block, end_at_block))
 
         return transfers

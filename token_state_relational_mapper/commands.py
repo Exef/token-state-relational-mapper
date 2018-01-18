@@ -61,6 +61,6 @@ def map_token_state():
             contract_address=options.contract_address,
             abi_definition=json.load(abi_definition),
             partition_size=app.config['MAX_BLOCKS_TO_MAP_AT_ONCE'],
-            max_number_of_retries=app.config['max_number_of_retries'],
+            max_number_of_retries=app.config['MAX_NUMBER_OF_RETRIES'],
             logger=app.logger)
         mapper.start_mapping(starting_block=options.starting_block, ending_block=options.ending_block)
