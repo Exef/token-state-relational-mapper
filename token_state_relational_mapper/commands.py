@@ -42,7 +42,7 @@ def start_mapping(start, end, address, min_block_height):
 def init_db():
     """ Initialize the database using connection string from config. """
     db.create_all()
-    click.echo('Initialized database under %s' % app.config['SQLALCHEMY_DATABASE_URI'])
+    app.logger.warning('Initialized database under %s' % app.config['SQLALCHEMY_DATABASE_URI'])
 
 
 @app.cli.command()
@@ -50,7 +50,7 @@ def init_db():
 def drop_db():
     """ Drop the database using connection string from config. """
     db.drop_all()
-    click.echo('Dropped database under %s' % app.config['SQLALCHEMY_DATABASE_URI'])
+    app.logger.warning('Dropped database under %s' % app.config['SQLALCHEMY_DATABASE_URI'])
 
 
 def map_token_state():

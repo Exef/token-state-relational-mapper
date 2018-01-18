@@ -12,12 +12,12 @@ class Mapper:
         self.logger = logger
         self.web3 = Web3(HTTPProvider(ethereum_node_uri))
         self.event_analyzer = TransferEventAnalyzer()
-        self.contract = TokenContractConnector(self.web3, abi_definition, contract_address)
+        self.contract = TokenContractConnector(self.web3, abi_definition, contract_address, logger)
         self.state_service = TokenStateService(self.contract)
         self.max_number_of_retries = max_number_of_retries
         self.partition_size = partition_size
 
-    def start_mapping(self, starting_block, ending_block):
+    def start_mapping(self, starting_block, ending_block, minimum_block_height=0):
         token = self.state_service.get_token_or_create_if_not_exists()
 
         if starting_block == 'contract_creation':
@@ -25,12 +25,23 @@ class Mapper:
 
         if ending_block == 'latest':
             ending_block = self.web3.eth.blockNumber
+            watch_contract = True
 
         self.logger.info(
             'Started gathering state of token %s from block %s to %s' % (token.name, starting_block, ending_block))
         self._partition_blocks_and_gather_state(token, starting_block, ending_block, self.partition_size)
         self.logger.info(
             'Ended gathering state of token %s from block %s to %s' % (token.name, starting_block, ending_block))
+
+        if watch_contract:
+            self.logger.info(
+                'Started watching latest blocks for token %s state changes starting from block %i minimal block height is set to %i'
+                    % (token.name, ending_block, minimum_block_height)
+            )
+            self.start_watching_latest_blocks(ending_block, minimum_block_height)
+
+    def start_watching_latest_blocks(self, last_scanned_block, minimum_block_height):
+        pass
 
     def _partition_blocks_and_gather_state(self, token, starting_block, ending_block, partition_size, retry_count=1):
         for start, end in generate_block_ranges(starting_block, ending_block, partition_size):

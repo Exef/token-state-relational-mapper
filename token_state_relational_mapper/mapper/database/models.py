@@ -3,7 +3,7 @@ Database models
 """
 from token_state_relational_mapper import db
 
-zero_address = '0x0000000000000000000000000000000000000000'
+ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
 block_token_association_table = db.Table('block_token_association',
                                          db.Column('block_number', db.Integer, db.ForeignKey('blocks.number'), primary_key=True),
@@ -65,7 +65,7 @@ class Transfer(db.Model):
     sent_to = db.relationship("TokenHolder", backref="received_transfers", foreign_keys='Transfer.sent_to_id')
 
     def is_minting_event(self):
-        return self.from_address == zero_address
+        return self.from_address == ZERO_ADDRESS
 
     def is_burning_transfer(self):
-        return self.to_address == zero_address
+        return self.to_address == ZERO_ADDRESS

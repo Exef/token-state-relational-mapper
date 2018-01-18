@@ -4,7 +4,7 @@ from token_state_relational_mapper.mapper import TransferEventAnalyzer
 from token_state_relational_mapper.mapper.database import Transfer
 
 
-zero_address = '0x0000000000000000000000000000000000000000'
+ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
 
 def test_true():
@@ -14,7 +14,7 @@ def test_true():
 def test_analyzing_single_transfer_event():
     analyzer = TransferEventAnalyzer()
     balance_changes = analyzer.get_events(list_with_single_transfer_event)
-    assert balance_changes.__len__() == 1
+    assert len(balance_changes) == 1
 
     change: Transfer = balance_changes[0]
     assert change.amount == 1223211588213989209982694
@@ -25,11 +25,11 @@ def test_analyzing_single_transfer_event():
 def test_analyzing_multiple_minting_transfer_events():
     analyzer = TransferEventAnalyzer()
     balance_changes = analyzer.get_events(list_of_20_minting_transfer_events)
-    assert balance_changes.__len__() == 20
-    assert all(change.from_address == zero_address for change in balance_changes)
+    assert len(balance_changes) == 20
+    assert all(change.from_address == ZERO_ADDRESS for change in balance_changes)
 
 
 def test_analyzing_wrong_events():
     analyzer = TransferEventAnalyzer()
     changes = analyzer.get_events(list_with_wrong_event)
-    assert changes.__len__() == 0
+    assert len(changes) == 0
