@@ -12,13 +12,15 @@ from .mapper import Mapper, MapperOptions
 
 @app.cli.command()
 @click.option('--address', type=str, callback=validate_address_parameter,
-              help='The address of ERC20 contract to watch.')
+              help='The address of the deployed ERC20 contract to map its state.')
 @click.option('--start', default='contract_creation', callback=validate_start_parameter,
-              help='The starting block where mapper starts gathering data about contract.')
+              help='The block number of starting block where mapper starts gathering data about the token.')
 @click.option('--end', default='latest', callback=validate_end_parameter,
-              help='The end block where mapper ends gathering data about contract and terminates.')
+              help='The block number of end block where mapper ends gathering data about the token and terminates. '
+                   'If it is not provided, service continues watching contracts events respecting minimum block height parameter.')
 @click.option('--min-block-height', type=int, callback=validate_integer_parameter,
-              help='The minimum block height of block to be mapped')
+              help='The minimum block height of block to be mapped during watching recently mined blocks.'
+                   ' The service never scans for blocks with a height lower than the specified value.')
 def start_mapping(start, end, address, min_block_height):
     """Command to start application. It starts server and starts gathering state of token. """
 
