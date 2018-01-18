@@ -14,7 +14,7 @@ Clone repository:
     cd token-state-relational-mapper
 
 
-Specify the following keys in ./config.py :
+Specify the following keys in [config.py](https://github.com/Exef/token-state-relational-mapper/blob/master/token_state_relational_mapper/config.py) :
 
     SQLALCHEMY_DATABASE_URI=''  # Postgres database address
     PARITY_NODE_URI=''          # address of nodes RPC interface
