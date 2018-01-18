@@ -41,18 +41,20 @@ class Mapper:
             'Started watching latest blocks for token %s state changes starting from block %i minimal block height is set to %i'
                 % (token.name, last_scanned_block, minimum_block_height))
         for new_transfer_events_state in self.contract.watch_contract_state(last_scanned_block, minimum_block_height):
-            balance_changes = self.event_analyzer.get_events(new_transfer_events_state)
-            self.state_service.add_transfers_to_token(token, balance_changes)
+            self._map_incoming_transfer_events(token, new_transfer_events_state)
 
     def _partition_blocks_and_gather_state(self, token, starting_block, ending_block, partition_size, retry_count=1):
         for start, end in generate_block_ranges(starting_block, ending_block, partition_size):
             try:
                 self.logger.info('Gather data of token %s from block %s to %s' % (token.name, start, end))
                 transfer_events = self.contract.get_state(starting_block, ending_block)
-                balance_changes = self.event_analyzer.get_events(transfer_events)
-                self.state_service.add_transfers_to_token(token, balance_changes)
+                self._map_incoming_transfer_events(token, transfer_events)
             except ReadTimeout as exception:
                 self._try_to_retry_mapping(token, start, ending_block, partition_size, retry_count, exception)
+
+    def _map_incoming_transfer_events(self, token, transfer_events):
+        balance_changes = self.event_analyzer.get_events(transfer_events)
+        self.state_service.add_transfers_to_token(token, balance_changes)
 
     def _try_to_retry_mapping(self, token, new_starting_block, ending_block, partition_size, retry_count, exception):
         if retry_count > self.max_number_of_retries:
