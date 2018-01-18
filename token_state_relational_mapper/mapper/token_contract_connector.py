@@ -1,3 +1,6 @@
+import time
+
+
 class TokenContractConnector:
     def __init__(self, web3_instance, contract_abi, contract_address, logger):
         self.logger = logger
@@ -30,6 +33,16 @@ class TokenContractConnector:
             % (len(transfers), self.contract_address, start_from_block, end_at_block))
 
         return transfers
+
+    def watch_contract_state(self, last_scanned_block, minimum_block_height):
+        while True:
+            current_block = self.web3.eth.blockNumber
+            self.logger.debug('Current block: %s Last_scanned_block: %s' % (current_block, last_scanned_block))
+            if last_scanned_block + minimum_block_height < current_block:
+                yield self.get_state(last_scanned_block, current_block - minimum_block_height)
+                last_scanned_block = current_block - minimum_block_height
+
+            time.sleep(60)
 
     def get_initial_block(self):
         self.logger.debug('Trying to get creation block of contract at address %s' % self.contract_address)

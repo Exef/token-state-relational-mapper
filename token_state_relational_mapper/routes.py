@@ -7,5 +7,5 @@ def get_configuration():
     return jsonify({
         'options': app.config['MapperOptions'].serialize(),
         'parity_node_uri': app.config['PARITY_NODE_URI'],
-        'sql_connection': app.config['DATABASE_URI']
+        'sql_connection': app.config['SQLALCHEMY_DATABASE_URI']
     })
