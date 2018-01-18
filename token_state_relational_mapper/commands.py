@@ -5,7 +5,7 @@ import click, json
 from os import path
 from multiprocessing import Process
 
-from token_state_relational_mapper.commands_validators import validate_address_parameter, validate_integer_parameter
+from token_state_relational_mapper.commands_validators import *
 from . import app, db
 from .mapper import Mapper, MapperOptions
 
@@ -13,9 +13,9 @@ from .mapper import Mapper, MapperOptions
 @app.cli.command()
 @click.option('--address', type=str, callback=validate_address_parameter,
               help='The address of ERC20 contract to watch.')
-@click.option('--start', type=int, callback=validate_integer_parameter,
+@click.option('--start', default='contract_creation', callback=validate_start_parameter,
               help='The starting block where mapper starts gathering data about contract.')
-@click.option('--end', type=int, callback=validate_integer_parameter,
+@click.option('--end', default='latest', callback=validate_end_parameter,
               help='The end block where mapper ends gathering data about contract and terminates.')
 @click.option('--min-block-height', type=int, callback=validate_integer_parameter,
               help='The minimum block height of block to be mapped')
@@ -23,9 +23,8 @@ def start_mapping(start, end, address, min_block_height):
     """Command to start application. It starts server and starts gathering state of token. """
 
     click.echo('Started mapping contract at address %s.' % address)
-    click.echo('Starting block: %i' % start)
-    if end is not None:
-        click.echo('Ending block: %i' % end)
+    click.echo('Starting block: %s' % start)
+    click.echo('Ending block: %s' % end)
 
     click.echo('Connecting to parity node: %s' % app.config['PARITY_NODE_URI'])
     app.config['MapperOptions'] = MapperOptions(address, start, end, min_block_height)

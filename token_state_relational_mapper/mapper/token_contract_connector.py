@@ -21,3 +21,6 @@ class TokenContractConnector:
         transfers = transfers_filter.get(only_changes=False)
 
         return transfers
+
+    def get_initial_block(self):
+        raise NotImplementedError
