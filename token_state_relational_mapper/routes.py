@@ -1,5 +1,6 @@
 from . import app
 from flask import jsonify
+from token_state_relational_mapper.mapper import get_token, get_top_token_holders
 
 
 @app.route('/api/configuration', methods=['GET'])
@@ -9,3 +10,14 @@ def get_configuration():
         'parity_node_uri': app.config['PARITY_NODE_URI'],
         'sql_connection': app.config['SQLALCHEMY_DATABASE_URI']
     })
+
+
+@app.route('/api/token/<contract_address>')
+def get_token_at_address(contract_address):
+    return jsonify(get_token(contract_address))
+
+
+@app.route('/api/token/<contract_address>/holders/top/<top>')
+def get_top_holders_of_token(contract_address, top):
+    top_holders = get_top_token_holders(contract_address, top)
+    return jsonify(top_holders)

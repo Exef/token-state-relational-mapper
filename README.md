@@ -69,3 +69,10 @@ Drops the database specified in config.py SQLALCHEMY_DATABASE_URI property. You 
 
     flask drop_db
 
+## API endpoints
+### Configuration
+    GET /api/configuration
+### Token infromation
+    GET /api/token/<contract_address>
+### Top token holders
+    GET /api/token/<contract_address>/holders/top/<number_of_top_holders>

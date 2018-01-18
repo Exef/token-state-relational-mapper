@@ -9,7 +9,7 @@ setup(
         'web3',
         'click',
         'Flask-SQLAlchemy',
-        'psycopg2', 'requests'
+        'psycopg2', 'requests', 'sqlalchemy'
     ],
     setup_requires=[
         'pytest-runner',

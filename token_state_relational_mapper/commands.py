@@ -18,7 +18,7 @@ from .mapper import Mapper, MapperOptions
 @click.option('--end', default='latest', callback=validate_end_parameter,
               help='The block number of end block where mapper ends gathering data about the token and terminates. '
                    'If it is not provided, service continues watching contracts events respecting minimum block height parameter.')
-@click.option('--min-block-height', type=int, callback=validate_integer_parameter,
+@click.option('--min-block-height', type=int, default=0, callback=validate_integer_parameter,
               help='The minimum block height of block to be mapped during watching recently mined blocks.'
                    ' The service never scans for blocks with a height lower than the specified value.')
 def start_mapping(start, end, address, min_block_height):
