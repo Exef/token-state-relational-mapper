@@ -1,13 +1,16 @@
 import time
 
+from web3 import Web3, HTTPProvider
+
 
 class TokenContractConnector:
-    def __init__(self, web3_instance, contract_abi, contract_address, logger):
+    def __init__(self, ethereum_node_uri, contract_abi, contract_address, logger):
         self.logger = logger
         self.event_name = 'Transfer'
         self.abi = contract_abi
         self.contract_address = contract_address
-        self.web3 = web3_instance
+
+        self.web3 = Web3(HTTPProvider(ethereum_node_uri))
         self.contract = self.web3.eth.contract(self.abi, contract_address)
 
     def get_basic_information(self):
@@ -43,6 +46,9 @@ class TokenContractConnector:
                 last_scanned_block = current_block - minimum_block_height
 
             time.sleep(60)
+
+    def get_latest_block_number(self):
+        return self.web3.eth.blockNumber
 
     def get_initial_block(self):
         self.logger.debug('Trying to get creation block of contract at address %s' % self.contract_address)
