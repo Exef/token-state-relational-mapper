@@ -1,0 +1,27 @@
+version: '2'
+services:
+  psql:
+    image: postgres:alpine
+    ports:
+      - "5432:5432"
+
+    environment:
+      - POSTGRES_PASSWORD=123qwe
+    volumes:
+      - psql_data:/var/lib/postgresql/data
+
+  admin:
+    image: dpage/pgadmin4
+
+    ports:
+      - "8080:80"
+
+    links:
+      - "psql"
+
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=dummy@email.com
+      - PGADMIN_DEFAULT_PASSWORD=123qwe
+
+volumes:
+  psql_data:
