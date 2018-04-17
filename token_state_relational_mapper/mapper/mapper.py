@@ -48,7 +48,7 @@ class Mapper:
         for start, end in generate_block_ranges(starting_block, ending_block, partition_size):
             try:
                 self.logger.info('Gather data of token %s from block %s to %s' % (token.name, start, end))
-                transfer_events = self.contract.get_state(starting_block, ending_block)
+                transfer_events = self.contract.get_state(start, end)
                 self._map_incoming_transfer_events(token, transfer_events)
             except ReadTimeout as exception:
                 self._try_to_retry_mapping(token, start, ending_block, partition_size, retry_count, exception)
