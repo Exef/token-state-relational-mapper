@@ -13,6 +13,7 @@ block_token_association_table = db.Table('block_token_association',
 class Block(db.Model):
     __tablename__ = 'blocks'
     number = db.Column(db.Integer, primary_key=True, autoincrement=False)
+    date = db.Column(db.DateTime,)
 
 
 class Token(db.Model):

@@ -25,6 +25,10 @@ class TokenStateService:
 
         self.session.commit()
 
+    def get_blocks_without_date(self):
+        blocks = self.session.query(Block).filter(Block.date.is_(None)).all()
+        return blocks
+
     def _attach_transfer_to_holders(self, token, transfer):
         from_token_holder = self._get_token_holder_or_create_if_not_exists(token, transfer.from_address)
         to_token_holder = self._get_token_holder_or_create_if_not_exists(token, transfer.to_address)
