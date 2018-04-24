@@ -3,6 +3,9 @@
 [![Join the chat at https://gitter.im/token-state-relational-mapper/Lobby](https://badges.gitter.im/token-state-relational-mapper/Lobby.svg)](https://gitter.im/token-state-relational-mapper/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![codebeat badge](https://codebeat.co/badges/c81778b3-120d-42d3-aec3-0b93e903e5ce)](https://codebeat.co/projects/github-com-exef-token-state-relational-mapper-master)
 
+## Disclamer
+Code below is not meant for production. It's old experiment we restored dirty so we can use its functionality in our [cryptotaxtool](https://github.com/Neufund/cryptotaxtool). You have been warned ;)
+
 ## Overview
 Token state relational mapper is a service that monitors a smart contract implementing [the ERC20 token](https://theethereum.wiki/w/index.php/ERC20_Token_Standard)  interface and maps its state to relational representation.
 Token contract state is not directly available via smart contract ABI and doing queries (like lists or aggregates) over many records is extremely slow. Additionally, the Solidity mapping data structure is not iterable so access to full state requires checking all transactions to token contract from its deployment.

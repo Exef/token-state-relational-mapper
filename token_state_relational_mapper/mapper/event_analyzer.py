@@ -27,6 +27,7 @@ class TransferEventAnalyzer(EventAnalyzer):
                 amount=event_dict['args']['_value'],
                 to_address=event_dict['args']['_to'],
                 from_address=event_dict['args']['_from'],
+                tx_hash=event_dict['transactionHash']
             )
         else:
             return None

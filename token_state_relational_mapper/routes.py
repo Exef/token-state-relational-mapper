@@ -1,6 +1,6 @@
 from . import app
 from flask import jsonify
-from token_state_relational_mapper.mapper import get_token, get_top_token_holders
+from token_state_relational_mapper.mapper import get_token, get_top_token_holders, get_transfers
 
 
 @app.route('/api/configuration', methods=['GET'])
@@ -21,3 +21,9 @@ def get_token_at_address(contract_address):
 def get_top_holders_of_token(contract_address, top):
     top_holders = get_top_token_holders(contract_address, top)
     return jsonify(top_holders)
+
+
+@app.route('/api/token/<contract_address>/transfers/<address>')
+def token_transfers(contract_address, address):
+    transfers = get_transfers(contract_address, address)
+    return jsonify(transfers)

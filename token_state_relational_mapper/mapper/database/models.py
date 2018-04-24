@@ -48,6 +48,7 @@ class TokenHolder(db.Model):
 class Transfer(db.Model):
     __tablename__ = 'transfers'
     id = db.Column(db.Integer, primary_key=True)
+    tx_hash = db.Column(db.Text)
 
     block_time = db.Column(db.Integer)
     amount = db.Column(db.Numeric(scale=0))
