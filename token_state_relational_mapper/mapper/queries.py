@@ -1,6 +1,6 @@
 from sqlalchemy import desc, or_
 
-from token_state_relational_mapper.mapper.database import Token, TokenHolder, Transfer, get_session
+from token_state_relational_mapper.mapper.database import Block, Token, TokenHolder, Transfer, get_session
 from token_state_relational_mapper.mapper.utils import convert_to_real_value_string
 
 
@@ -57,13 +57,15 @@ def get_transfers(contract_address, wallet_address):
     session = get_session()
 
     token_id = session.query(Token.id).filter_by(address=contract_address).first()
-    transfers = session.query(Transfer).filter(Transfer.token_id == token_id,
-                                               or_(Transfer.from_address == wallet_address,
-                                                   Transfer.to_address == wallet_address)).all()
 
     return [{
+        'date': block.date,
         'amount': str(transfer.amount),
         'tx_hash': transfer.tx_hash,
         'to_address': transfer.to_address,
         'from_address': transfer.from_address
-    } for transfer in transfers]
+    } for transfer, block in session.query(Transfer, Block).join(Block, Block.number == Transfer.block_time).filter(
+            Transfer.token_id == token_id,
+            or_
+                (Transfer.from_address == wallet_address,
+                 Transfer.to_address == wallet_address)).all()]

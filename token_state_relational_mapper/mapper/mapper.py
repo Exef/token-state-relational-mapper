@@ -43,6 +43,7 @@ class Mapper:
         for new_transfer_events_state in self.contract.watch_contract_state(last_scanned_block, minimum_block_height):
             balance_changes = self.event_analyzer.get_events(new_transfer_events_state)
             self.state_service.add_transfers_to_token(token, balance_changes)
+            self._add_date_to_blocks()
 
     def _partition_blocks_and_gather_state(self, token, starting_block, ending_block, partition_size, retry_count=1):
         for start, end in generate_block_ranges(starting_block, ending_block, partition_size):
@@ -50,6 +51,7 @@ class Mapper:
                 self.logger.info('Gather data of token %s from block %s to %s' % (token.name, start, end))
                 transfer_events = self.contract.get_state(start, end)
                 self._map_incoming_transfer_events(token, transfer_events)
+                self._add_date_to_blocks()
             except ReadTimeout as exception:
                 self._try_to_retry_mapping(token, start, ending_block, partition_size, retry_count, exception)
 
@@ -63,3 +65,8 @@ class Mapper:
 
         self.logger.warning('Encounter requests.exceptions.ReadTimeout. Retry for %i time' % retry_count)
         self._partition_blocks_and_gather_state(token, new_starting_block, ending_block, partition_size, retry_count + 1)
+
+    def _add_date_to_blocks(self):
+        blocks_no_date = self.state_service.get_blocks_without_date()
+        self.contract.get_block_dates(blocks_no_date)
+

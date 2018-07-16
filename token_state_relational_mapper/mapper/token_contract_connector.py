@@ -1,4 +1,5 @@
 import time
+import datetime
 
 from web3 import Web3, HTTPProvider
 
@@ -53,3 +54,9 @@ class TokenContractConnector:
     def get_initial_block(self):
         self.logger.debug('Trying to get creation block of contract at address %s' % self.contract_address)
         raise NotImplementedError
+
+    def get_block_dates(self, blocks):
+        for block in blocks:
+            self.logger.debug('Getting %s block data from node.' % block.number)
+            eth_block = self.web3.eth.getBlock(block.number)
+            block.date = datetime.datetime.fromtimestamp(eth_block.timestamp)
