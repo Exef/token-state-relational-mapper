@@ -33,8 +33,8 @@ Then run:
 
     export TSRM_SETTINGS=config.py
     export FLASK_APP=./token_state_relational_mapper/commands.py
-    flask init_db
-    flask start_mapping --start <block-number>  --end <block-number> --address <token-contract-address>
+    flask init-db
+    flask start-mapping --start <block-number>  --end <block-number> --address <token-contract-address>
 
 ## Available commands
 To check all available commands run:
@@ -44,7 +44,7 @@ To check all available commands run:
 ### Start mapping
 Starts the mapping proccess and creates a webserver serving web api 
 
-    flask start_mapping --start <block-number>  --end <block-number> --address <token-contract-address> --min-block-height <number>
+    flask start-mapping --start <block-number>  --end <block-number> --address <token-contract-address> --min-block-height <number>
 
 Parameters:
 
@@ -65,12 +65,12 @@ Parameters:
 ### Create database
 Initializes database specified in config.py SQLALCHEMY_DATABASE_URI property and creates all required tables.
 
-    flask init_db
+    flask init-db
 
 ### Drop database
 Drops the database specified in config.py SQLALCHEMY_DATABASE_URI property. You have to confirm this operation in command line prompt.
 
-    flask drop_db
+    flask drop-db
 
 ## API endpoints
 ### Configuration
