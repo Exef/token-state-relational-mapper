@@ -1,5 +1,3 @@
-from requests import ReadTimeout
-
 from .event_analyzer import TransferEventAnalyzer
 from .state_service import TokenStateService
 from .token_contract_connector import TokenContractConnector
@@ -52,7 +50,7 @@ class Mapper:
                 transfer_events = self.contract.get_state(start, end)
                 self._map_incoming_transfer_events(token, transfer_events)
                 self._add_date_to_blocks()
-            except ReadTimeout as exception:
+            except Exception as exception:
                 self._try_to_retry_mapping(token, start, ending_block, partition_size, retry_count, exception)
 
     def _map_incoming_transfer_events(self, token, transfer_events):
@@ -63,7 +61,7 @@ class Mapper:
         if retry_count > self.max_number_of_retries:
             raise exception
 
-        self.logger.warning('Encounter requests.exceptions.ReadTimeout. Retry for %i time' % retry_count)
+        self.logger.warning('Retry for %i time' % retry_count)
         self._partition_blocks_and_gather_state(token, new_starting_block, ending_block, partition_size, retry_count + 1)
 
     def _add_date_to_blocks(self):

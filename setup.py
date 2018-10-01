@@ -5,14 +5,14 @@ setup(
     packages=['token_state_relational_mapper'],
     include_package_data=True,
     install_requires=[
-        'eth-utils==0.7.4',
-        'web3==3.16.5',
+        'eth-utils==1.2.2',
+        'web3==4.7.2',
         'click',
         'Flask-SQLAlchemy',
         'psycopg2',
         'requests',
         'sqlalchemy',
-        'flask',
+        'flask==0.12.4',
     ],
     setup_requires=[
         'pytest-runner',
