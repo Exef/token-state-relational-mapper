@@ -1,18 +1,23 @@
 import time
 import datetime
 
+from eth_utils import event_abi_to_log_topic
 from web3 import Web3, HTTPProvider
+from web3.utils.contracts import find_matching_event_abi
+from web3.utils.events import get_event_data
 
 
-class TokenContractConnector:
+class TokenContractConnector(object):
     def __init__(self, ethereum_node_uri, contract_abi, contract_address, logger):
         self.logger = logger
-        self.event_name = 'Transfer'
         self.abi = contract_abi
-        self.contract_address = contract_address
+        self.contract_address = Web3.toChecksumAddress(contract_address)
 
         self.web3 = Web3(HTTPProvider(ethereum_node_uri))
-        self.contract = self.web3.eth.contract(self.abi, contract_address)
+        self.contract = self.web3.eth.contract(abi=self.abi, address=self.contract_address)
+
+        self.event_abi = find_matching_event_abi(self.abi, event_name="Transfer")
+        self.event_topic = event_abi_to_log_topic(self.event_abi)
 
     def get_basic_information(self):
         self.logger.debug('Getting basic token information from contract at address %s' % self.contract_address)
@@ -28,10 +33,16 @@ class TokenContractConnector:
             'Getting state of token from contract at address %s from block %s to %s' % (
                 self.contract_address, start_from_block, end_at_block))
 
-        filters = {'fromBlock': start_from_block, 'toBlock': end_at_block}
-        transfers_filter = self.contract.on(self.event_name, filters)
+        entries = self.web3.eth.getLogs({
+            "address": self.contract_address,
+            "fromBlock": start_from_block,
+            "toBlock": end_at_block})
 
-        transfers = transfers_filter.get(only_changes=False)
+        transfers = []
+        for raw_event in [entry for entry in entries if entry['topics'][0] == self.event_topic]:
+            transfer = get_event_data(self.event_abi, raw_event)
+            transfers.append(transfer)
+
         self.logger.debug(
             'Found %i transfers of token from contract at address %s from block %s to %s'
             % (len(transfers), self.contract_address, start_from_block, end_at_block))
@@ -59,4 +70,5 @@ class TokenContractConnector:
         for block in blocks:
             self.logger.debug('Getting %s block data from node.' % block.number)
             eth_block = self.web3.eth.getBlock(block.number)
+
             block.date = datetime.datetime.fromtimestamp(eth_block.timestamp)

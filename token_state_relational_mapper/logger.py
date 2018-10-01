@@ -1,9 +1,9 @@
 from logging.handlers import RotatingFileHandler
 
 import sys
+import logging
 
 from logging import captureWarnings
-from flask import logging
 
 
 def init_logger(app):

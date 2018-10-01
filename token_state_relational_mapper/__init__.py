@@ -2,7 +2,7 @@
 Simple ERC20 token state relational mapper service that gathers data from Ethereum blockchain about specific token.
 Recent token state is stored in the database.
 """
-from flask import Flask, logging
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from .logger import init_logger
 

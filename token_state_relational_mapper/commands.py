@@ -37,8 +37,10 @@ def start_mapping(start, end, address, min_block_height):
     app.run()
 
     if token_state_mapping_process.is_alive():
+        click.echo('Terminating mapper.')
         token_state_mapping_process.terminate()
 
+    click.echo('Finished work.')
 
 @app.cli.command()
 def init_db():
